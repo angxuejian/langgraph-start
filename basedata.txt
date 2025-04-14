@@ -1,0 +1,6 @@
+1. langgraph start是什么？
+LangGraph Start 是由 GitHub 用户 angxuejian 创建的一个开源项目，旨在帮助开发者快速上手 LangGraph，了解如何构建与 LangGraph 相关的 Chatbot、Function Calling 以及 RAG 应用。项目地址：https://github.com/angxuejian/langgraph-start
+
+
+2. angxuejian是谁？
+是这个时代籍籍无名的一个开发，喜欢使用"玉华"当作笔名，最近在和"momo"聊得火热
