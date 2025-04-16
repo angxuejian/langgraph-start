@@ -79,7 +79,7 @@ python main.py
 python run_rag.py
 ```
 
-3、自定义文本内容，将其向量化
+3、运行embedding model，将自定义文本内容转换为向量(Vectors)的浮点数数组
 
 - ```file_name```：向量化后的文件名称
 - ```source_file_name```：源文件名称
@@ -90,9 +90,10 @@ python run_vector.py
 
 > 本地会加载```BAAI/bge-base-zh```模型，推理速度因电脑差异会有快慢之分，没看到控制台输出```HuggingFaceEmbeddings done !```前，均还在推理，切勿退出。只有运行```run_rag.py```和```run_vector.py```才会使用到向量化
 
-4、mcp server，在cursor、windsurf、claude等应用上，打开```mcp.json```，将以下配置复制粘贴
+4、使用mcp server，在cursor、windsurf、claude等应用上，打开```mcp.json```，将以下配置复制粘贴
+
+Windows
 ```json
-// windows
 {
   "mcpServers": {
     "tools-server": {
@@ -103,8 +104,10 @@ python run_vector.py
     }
   }
 }
+```
 
-// MacOS or Linux
+MacOS or Linux
+```json
 {
   "mcpServers": {
     "tools-server": {
@@ -119,7 +122,7 @@ python run_vector.py
 
 目前只有```get_current_time_mcpfunction```一个函数，询问当前时间，即可调用。
 
-5、mcp client，执行本地Mcp server工具
+5、运行mcp client，使用本地mcp server工具
 ```bash
 python .\mcp\client.py .\mcp\server.py
 ```
