@@ -64,7 +64,7 @@ web = {
 ```
 ## 运行说明
 
-> 需要科学上网，才能运行
+> 需要科学上网，才能运行；以下命令都在```langgraph-start```目录下执行
 
 1、运行chatbot，根据配置可使用```tools```、```memory```功能
 ```bash
@@ -89,6 +89,42 @@ python run_vector.py
 ```
 
 > 本地会加载```BAAI/bge-base-zh```模型，推理速度因电脑差异会有快慢之分，没看到控制台输出```HuggingFaceEmbeddings done !```前，均还在推理，切勿退出。只有运行```run_rag.py```和```run_vector.py```才会使用到向量化
+
+4、mcp server，在cursor、windsurf、claude等应用上，打开```mcp.json```，将以下配置复制粘贴
+```json
+// windows
+{
+  "mcpServers": {
+    "tools-server": {
+      "command": "python",
+      "args": [
+        "C:\\ABSOLUTE-PATH\\XXXXXXX\\langgraph-start\\mcp\\server.py" 
+      ]
+    }
+  }
+}
+
+// MacOS or Linux
+{
+  "mcpServers": {
+    "tools-server": {
+      "command": "python",
+      "args": [
+        "/ABSOLUTE-PATH/XXXXXXX/langgraph-start/mcp/server.py" 
+      ]
+    }
+  }
+}
+```
+
+目前只有```get_current_time_mcpfunction```一个函数，询问当前时间，即可调用。
+
+5、mcp client，执行本地Mcp server工具
+```bash
+python .\mcp\client.py .\mcp\server.py
+```
+> 可替换成其他mcp工具，修改```client.py```文件中的```StdioServerParameters(command='', args=[], env=None)```参数即可
+
 
 ## 交流
 

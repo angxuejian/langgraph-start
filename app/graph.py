@@ -1,7 +1,7 @@
 from langgraph.graph import StateGraph, START, END
 from app.llm import LLM
 from langgraph.graph.message import add_messages
-from typing import Annotated
+from typing import Annotated, List
 from typing_extensions import TypedDict
 from app.tools import TOOLS
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -34,9 +34,15 @@ class LLMNodeGraph():
     
 
     def _invoke(self, state: State):
-        print(state['messages'], '\n\n')
 
         message = self.chat.invoke(state["messages"])
+   
+        assert len(message.tool_calls) <= 1
+        return {"messages": [message]}
+    
+    async def _ainvoke(self, state: State):
+
+        message = await self.chat.ainvoke(state["messages"])
    
         assert len(message.tool_calls) <= 1
         return {"messages": [message]}
@@ -61,8 +67,7 @@ class LLMNodeGraph():
 
         if (remove_system_messages or remove_chat_messages):
             return { "messages": remove_chat_messages + remove_system_messages }
-
-    
+            
     def _compile(self):
 
         if self.memory:
@@ -73,11 +78,11 @@ class LLMNodeGraph():
         return self.graph
 
 
-    def chatbot(self):
+    def chatbot(self, async_invoke: bool = False):
 
         self.chat = llm.ask()
 
-        self.graph_builder.add_node("chatbot", self._invoke)
+        self.graph_builder.add_node("chatbot", self._ainvoke if async_invoke else self._invoke)
 
         if (self.memory):
             self.graph_builder.add_node('filter_messages', self._filter_messages)
@@ -92,12 +97,12 @@ class LLMNodeGraph():
         return self._compile()
     
 
-    def chatbot_tools(self):
+    def chatbot_tools(self, tools: List = TOOLS, async_invoke: bool = False):
 
-        self.chat = llm.ask_tools(TOOLS)
+        self.chat = llm.ask_tools(tools)
 
-        self.graph_builder.add_node("chatbot", self._invoke)
-        self.graph_builder.add_node("tools", ToolNode(tools=TOOLS))
+        self.graph_builder.add_node("chatbot", self._ainvoke if async_invoke else self._invoke)
+        self.graph_builder.add_node("tools", ToolNode(tools=tools))
 
         if (self.memory):
             self.graph_builder.add_node('filter_messages', self._filter_messages)
